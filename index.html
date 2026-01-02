@@ -1,0 +1,210 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>SnarkyType — Try the Typing Test</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <header id="topbar" class="sticky">
+    <div class="brand">
+      <a href="#top" class="logo-link" aria-label="SnarkyType home">
+        <img src="https://burchweb-files.sirv.com/SnarkyType/Logo%20-%20ST%20Key.svg" alt="SnarkyType" class="logo">
+      </a>
+      <div class="brand-title">SnarkyType</div>
+      <div class="alpha-badge"><code>alpha</code></div>
+    </div>
+    <nav class="topbar-right">
+      <div id="usernameDisplay">Try it now — fast & snarky</div>
+      <a href="#demoSection" class="nav-link">Demo</a>
+      <a href="#about" class="nav-link">About</a>
+      <button id="dashboardBtn" class="btn">Get Started</button>
+    </nav>
+  </header>
+
+  <main class="snap-container" id="top">
+    <!-- canvas for subtle sparks behind content -->
+    <canvas id="sparkCanvas" aria-hidden="true"></canvas>
+    <!-- Hero with animated SVGs and CTA -->
+    <section id="heroSection" class="hero section" data-theme="blue">
+      <div class="hero-inner">
+        <div class="hero-left">
+          <h1 class="hero-title">SnarkyType</h1>
+          <p class="hero-sub">Type faster. Be snarky. Ship muscle memory.</p>
+          <p class="lead">A delightful, keyboard-first typing trainer built for speed, accuracy, and a little attitude — with micro-interactions that make practice feel like play.</p>
+          <p class="lead">No bloat. Just fast feedback, smart passages, and snarky encouragement when you miss a key.</p>
+          <div class="hero-cta">
+            <button id="startTestBtn" class="btn">Try the Typing Test</button>
+            <button id="seeMoreBtn" class="btn">Learn More</button>
+          </div>
+          <div class="countdown" id="countdown">Release in <span id="countdownValue">—</span></div>
+        </div>
+
+        <div class="hero-right parallax" data-speed="0.18">
+          <!-- bouncing SVGs -->
+          <div class="svg-wrap">
+            <svg class="blob b1" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <path fill="#06b6d4" d="M40.6,-66.1C53.5,-58.9,68.6,-52.5,74.1,-40.6C79.7,-28.6,75.7,-11.3,71.4,6.7C67.1,24.7,62.5,42.9,51.5,52.2C40.5,61.6,23.1,62.1,6.4,57.2C-10.3,52.4,-20.5,42.1,-32.2,32.9C-43.9,23.7,-57.1,15.6,-62.3,2.8C-67.5,-10.1,-64.7,-27.7,-54.3,-38.9C-43.9,-50.1,-25.9,-54.9,-9.4,-51.4C7.1,-47.9,14.2,-36.4,40.6,-66.1Z" transform="translate(100 100)"/>
+            </svg>
+            <svg class="blob b2" viewBox="0 0 200 200" xmlns="http://www.w3.org/2000/svg">
+              <circle cx="60" cy="60" r="50" fill="#ffb300" />
+            </svg>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Typing demo panel (info above, test full-width below) -->
+    <section id="demoSection" class="section demo-section" data-theme="midblue">
+      <div class="demo-inner">
+        <div class="demo-info">
+          <h3>Fast, smooth, and insulting</h3>
+          <p>Tap the typing area to focus. On mobile, the keyboard SHOULD appear. The caret tracks your typed characters precisely.</p>
+          <p class="muted">Bigger test below — go fast, stay snarky.</p>
+        </div>
+      </div>
+
+      <div class="demo-full">
+        <div class="test-panel" id="testPanel">
+          <h2>Try it for yourself</h2>
+          <div id="canvasContainer">
+            <div id="typingContent" aria-live="polite"></div>
+            <div id="caret" class="idle" aria-hidden="true"></div>
+            <input id="hiddenInput" inputmode="text" autocomplete="off" autocapitalize="off" autocorrect="off" spellcheck="false" style="opacity:0;"/>
+          </div>
+
+          <div id="controls">
+            <button id="focusBtn" class="btn">Focus Test</button>
+            <button id="resetBtn" class="btn">Reset</button>
+            <button id="randomBtn" class="btn">New Passage</button>
+          </div>
+
+          <div id="stats">
+            <div id="wpm">WPM: <span>0</span></div>
+            <div id="accuracy">Accuracy: <span>100%</span></div>
+            <div id="timer">Time: <span>0s</span></div>
+          </div>
+
+          <div id="resultPanel" class="result-panel" aria-live="polite" hidden>
+            <div class="results-inner">
+              <div class="results-stats">
+                <div class="big-wpm">WPM: <span id="resultWpm">0</span></div>
+                <div class="small-meta">Accuracy: <span id="resultAcc">0%</span> • Time: <span id="resultTime">0s</span></div>
+              </div>
+              <div class="results-roast" id="resultRoast">—</div>
+              <div class="results-actions">
+                <button id="retryBtn" class="btn">Retry</button>
+                <button id="closeResults" class="btn">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- About / features -->
+    <section id="about" class="section about-section" data-theme="soft">
+      <div class="container">
+        <h2>About SnarkyType</h2>
+        <p>SnarkyType is a lightweight, delightful typing trainer built for speed, clarity, and a little attitude.</p>
+        <p><strong>Typing sucks.</strong> That is why SnarkyType exists. Real scientists have proven that repetition is key to mastery. At SnarkyType, we are super repetitive, but to spice things up a bit, we add snarky comments to make you cry i mean laugh.</p>
+        <p>Design goals: low friction, high contrast, mean snark, and delightful motion. We optimize for keyboard-first workflows and mobile responsiveness.</p>
+        <ul class="features">
+          <li>Short focused drills (customizable)</li>
+          <li>Real-time accuracy and WPM</li>
+          <li>Snarky feedback</li>
+          <li>Offline-friendly and lightweight</li>
+        </ul>
+      </div>
+    </section>
+
+    <!-- Team -->
+    <section id="team" class="section team-section" data-theme="soft">
+      <div class="container creators">
+        <h2>The Makers</h2>
+        <div class="creators-grid">
+          <article class="creator-card" aria-label="Andrew — Founder & Frontend Dev">
+            <img class="creator-img" src="https://burchweb-files.sirv.com/SnarkyType/Creator/Andrew.png" alt="CodeMonster240 avatar">
+            <div class="creator-meta">
+              <strong class="creator-name">Andrew</strong>
+              <div class="creator-role">Founder & Frontend Developer</div>
+              <p class="creator-bio">The idiot that runs this whole show</p>
+            </div>
+          </article>
+
+          <article class="creator-card" aria-label="Darrick - Backend and hosting">
+            <img class="creator-img" src="https://burchweb-files.sirv.com/SnarkyType/Creator/Darrick.gif" alt="SnarkyLab avatar">
+            <div class="creator-meta">
+              <strong class="creator-name">Darrick</strong>
+              <div class="creator-role">Backend and hosting</div>
+              <p class="creator-bio">Andrew doesn't know what he's doing when it comes to backend and hosting, so Darrick handles it.</p>
+            </div>
+          </article>
+
+          <article class="creator-card" aria-label="ChatGPT">
+            <img class="creator-img" src="https://upload.wikimedia.org/wikipedia/commons/1/13/ChatGPT-Logo.png" alt="TestCrew avatar">
+            <div class="creator-meta">
+              <strong class="creator-name">ChatGPT</strong>
+              <div class="creator-role">Everything Else</div>
+              <p class="creator-bio">these dweebs are dummer than me</p>
+            </div>
+          </article>
+        </div>
+      </div>
+    </section>
+
+    <section id="testers" class="section testers-section" data-theme="soft">
+      <div class="container">
+        <h2>Thanks to all of our beta testers</h2>
+        <p class="muted">You helped make SnarkyType sharper. We might be rude, but we truely appreciate your help!</p>
+        <div class="testers-grid">
+        <div class="tester-card"><span>Hugh P</span></div>
+        <div class="tester-card"><span>Sam L</span></div>
+        <div class="tester-card"><span>Harold B</span></div>
+        <div class="tester-card"><span>Sabrina M</span></div>
+        <div class="tester-card"><span>Michael C</span></div>
+        <div class="tester-card"><span>Marco P</span></div>
+        <div class="tester-card"><span>Caleb V</span></div>
+        <div class="tester-card"><span>Trevor M</span></div>
+        <div class="tester-card"><span>Liam T</span></div>
+        <div class="tester-card"><span>Donald C</span></div>
+        <div class="tester-card"><span>Jane Q</span></div>
+        <div class="tester-card"><span>Chris Z</span></div>
+        <div class="tester-card"><span>Alexis R</span></div>
+        <div class="tester-card"><span>Jordan S</span></div>
+        <div class="tester-card"><span>Pat L</span></div>
+        <div class="tester-card"><span>Casey M</span></div>
+        <div class="tester-card"><span>Robin F</span></div>
+        <div class="tester-card"><span>Skylar J</span></div>
+        <div class="tester-card"><span>Taylor W</span></div>
+        <div class="tester-card"><span>Jamie K</span></div>
+
+        </div>
+      </div>
+    </section>
+
+    <!-- Thanks -->
+    <section id="thanks" class="section thanks-section" data-theme="soft">
+      <div class="container">
+        <h2>Special Thanks</h2>
+        <p>Thanks to the open-source community and our early testers for helping shape SnarkyType.</p>
+        <p>to maverick for dealing with our endless yap about it</p>
+        <p>We build in public and iterate fast — your feedback shaped the pacing, animations, and the snark levels.</p>
+        <p>Want to join the beta? Sign up by emailing <a href="mailto:support@snarkytype.com">support@snarkytype.com</a>. It's free, and you'll be sent special stuff ✨</p>
+      </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer section" data-theme="dark">
+      <div class="container">Made with ❤ by SnarkyType</div>
+    </footer>
+  </main>
+
+  <script src="https://cdn.jsdelivr.net/npm/@studio-freight/lenis@1.0.20/bundled/lenis.min.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
